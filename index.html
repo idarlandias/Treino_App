@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#f4f2ee">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
+    <title>Treino Semanal — Controle de Progresso</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════
+   DESIGN SYSTEM
+   ═══════════════════════════════════════════ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --bg: #f4f2ee;
+            --bg2: #eceae5;
+            --card: rgba(255, 255, 255, .8);
+            --card-hover: rgba(255, 255, 255, .95);
+            --surface: rgba(255, 255, 255, .6);
+            --surface2: rgba(240, 238, 233, .8);
+            --glass: rgba(255, 255, 255, .7);
+            --glass-border: rgba(0, 0, 0, .06);
+            --push: #4f6ef7;
+            --push-dim: rgba(79, 110, 247, .06);
+            --pull: #0cb88a;
+            --pull-dim: rgba(12, 184, 138, .06);
+            --legs: #9b6dff;
+            --legs-dim: rgba(155, 109, 255, .06);
+            --full: #f06040;
+            --full-dim: rgba(240, 96, 64, .06);
+            --green: #22c77e;
+            --green-dim: rgba(34, 199, 126, .06);
+            --gold: #e8a020;
+            --gold-dim: rgba(232, 160, 32, .06);
+            --text: #111118;
+            --text2: #44445a;
+            --text3: #7a7a90;
+            --border: rgba(0, 0, 0, .06);
+            --border2: rgba(0, 0, 0, .09);
+            --radius: 20px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, .08);
+            --shadow-sm: 0 2px 12px rgba(0, 0, 0, .05);
+            --transition: .3s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════════════════
+   ANIMATED BACKGROUND
+   ═══════════════════════════════════════════ */
+        .bg-effects {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(160px);
+            opacity: .18;
+            animation: orbFloat 25s ease-in-out infinite
+        }
+
+        .bg-orb:nth-child(1) {
+            width: 700px;
+            height: 700px;
+            background: #fca5a5;
+            top: -15%;
+            left: -15%;
+            animation-delay: 0s
+        }
+
+        .bg-orb:nth-child(2) {
+            width: 550px;
+            height: 550px;
+            background: #c4b5fd;
+            bottom: -8%;
+            right: -12%;
+            animation-delay: -8s
+        }
+
+        .bg-orb:nth-child(3) {
+            width: 450px;
+            height: 450px;
+            background: #7dd3fc;
+            top: 50%;
+            left: 45%;
+            animation-delay: -16s
+        }
+
+        @keyframes orbFloat {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1)
+            }
+
+            33% {
+                transform: translate(80px, -50px) scale(1.15)
+            }
+
+            66% {
+                transform: translate(-40px, 60px) scale(.85)
+            }
+        }
+
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 0, 0, .025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, .025) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+
+        .bg-gradient {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 0%, rgba(252, 165, 165, .12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(196, 181, 253, .10) 0%, transparent 50%)
+        }
+
+        /* ═══════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════ */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 940px;
+            margin: 0 auto;
+            padding: 0 20px
+        }
+
+        /* ═══════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════ */
+        header {
+            padding: 52px 0 0;
+            text-align: center
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 22px
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #4f6ef7, #9b6dff);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 6px 24px rgba(79, 110, 247, .25)
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(79, 110, 247, .08);
+            border: 1px solid rgba(79, 110, 247, .15);
+            padding: 6px 18px;
+            border-radius: 100px;
+            font-size: .68rem;
+            font-weight: 600;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: #4f6ef7;
+        }
+
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse 2s ease-in-out infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .3
+            }
+        }
+
+        header h1 {
+            font-size: clamp(1.9rem, 5vw, 3.2rem);
+            font-weight: 900;
+            letter-spacing: -.03em;
+            color: #111118;
+            margin-top: 16px;
+            line-height: 1.12
+        }
+
+        header h1 span {
+            background: linear-gradient(135deg, #4f6ef7 0%, #9b6dff 40%, #f06040 70%, #e8a020 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradShift 8s ease-in-out infinite;
+        }
+
+        @keyframes gradShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%
+            }
+
+            50% {
+                background-position: 100% 50%
+            }
+        }
+
+        .week-info {
+            color: var(--text2);
+            margin-top: 10px;
+            font-size: .85rem;
+            font-weight: 500
+        }
+
+        /* ═══════════════════════════════════════════
+   DASHBOARD STATS
+   ═══════════════════════════════════════════ */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 16px;
+            margin-top: 32px;
+            padding: 28px;
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        @media(max-width:600px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                padding: 18px
+            }
+        }
+
+        .stat {
+            text-align: center;
+            padding: 14px 8px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, .02);
+        }
+
+        .stat .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #111118;
+            line-height: 1.2
+        }
+
+        .stat .label {
+            font-size: .65rem;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-top: 6px
+        }
+
+        .stat.accent .value {
+            color: var(--green)
+        }
+
+        .stat.fire .value {
+            color: var(--gold)
+        }
+
+        .progress-section {
+            grid-column: 1/-1;
+            padding: 12px 0 0
+        }
+
+        .progress-row {
+            display: flex;
+            align-items: center;
+            gap: 16px
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg)
+        }
+
+        .progress-ring .ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, .04);
+            stroke-width: 4
+        }
+
+        .progress-ring .ring-fill {
+            fill: none;
+            stroke: url(#progGrad);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transition: stroke-dashoffset .8s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .progress-ring .ring-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: .65rem;
+            font-weight: 700;
+            color: #111118
+        }
+
+        .progress-bar-wrap {
+            flex: 1
+        }
+
+        .progress-bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px
+        }
+
+        .progress-bar-label span {
+            font-size: .7rem;
+            color: var(--text2);
+            font-weight: 600
+        }
+
+        .progress-bar-label .pct {
+            color: var(--green);
+            font-family: 'JetBrains Mono', monospace
+        }
+
+        .progress-track {
+            height: 8px;
+            background: rgba(0, 0, 0, .1);
+            border-radius: 100px;
+            overflow: hidden
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, #4f6ef7, #9b6dff, #f06040, #e8a020);
+            background-size: 300% 100%;
+            animation: barShift 4s ease-in-out infinite;
+            transition: width .8s cubic-bezier(.4, 0, .2, 1);
+            position: relative
+        }
+
+        @keyframes barShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%
+            }
+
+            50% {
+                background-position: 100% 50%
+            }
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, .25) 50%, transparent 100%);
+            animation: shimmer 2.5s infinite
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%)
+            }
+
+            100% {
+                transform: translateX(100%)
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+   DAY NAVIGATION
+   ═══════════════════════════════════════════ */
+        .day-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-top: 28px;
+            padding: 16px 0 12px;
+            background: linear-gradient(var(--bg) 0%, rgba(244, 242, 238, .97) 60%, transparent 100%);
+            backdrop-filter: blur(16px);
+        }
+
+        .day-nav-inner {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .day-btn {
+            position: relative;
+            overflow: hidden;
+            background: var(--card);
+            border: 1px solid var(--border2);
+            color: var(--text3);
+            padding: 14px 6px 12px;
+            border-radius: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: .72rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .35s cubic-bezier(.4, 0, .2, 1);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .day-btn .d-emoji {
+            display: block;
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+            filter: grayscale(.6);
+            transition: filter .3s;
+        }
+
+        .day-btn .d-name {
+            display: block;
+            position: relative;
+            z-index: 2;
+            font-size: .75rem;
+            font-weight: 800;
+            letter-spacing: .8px;
+        }
+
+        .day-btn .d-type {
+            display: block;
+            font-size: .55rem;
+            font-weight: 500;
+            opacity: .45;
+            margin-top: 3px;
+            position: relative;
+            z-index: 2;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        .day-btn .d-ring {
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .day-btn .d-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .day-btn .ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, .06);
+            stroke-width: 2.5;
+        }
+
+        .day-btn .ring-val {
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            transition: stroke-dashoffset .6s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .day-btn:hover {
+            color: var(--text);
+            border-color: rgba(255, 255, 255, .12);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .3);
+        }
+
+        .day-btn:hover .d-emoji {
+            filter: grayscale(0);
+        }
+
+        .day-btn.active {
+            color: #fff;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, .35);
+        }
+
+        .day-btn.active .d-emoji {
+            filter: grayscale(0);
+        }
+
+        .day-btn.active .d-type {
+            opacity: .85;
+        }
+
+        .day-btn.today {
+            border-color: rgba(232, 160, 32, .4);
+        }
+
+        .day-btn.today .d-hoje {
+            display: inline-block;
+            font-size: .42rem;
+            font-weight: 800;
+            letter-spacing: .6px;
+            background: var(--gold);
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        .day-btn.done {
+            border-color: rgba(34, 199, 126, .3);
+        }
+
+        .day-btn.done .d-emoji {
+            filter: grayscale(0);
+        }
+
+        /* Day type backgrounds when active */
+        .day-btn[data-c="push"].active {
+            background: linear-gradient(160deg, rgba(79, 110, 247, .12), rgba(79, 110, 247, .03));
+            border-color: rgba(79, 110, 247, .3);
+            box-shadow: 0 8px 30px rgba(79, 110, 247, .1);
+        }
+
+        .day-btn[data-c="pull"].active {
+            background: linear-gradient(160deg, rgba(12, 184, 138, .12), rgba(12, 184, 138, .03));
+            border-color: rgba(12, 184, 138, .3);
+            box-shadow: 0 8px 30px rgba(12, 184, 138, .1);
+        }
+
+        .day-btn[data-c="legs"].active {
+            background: linear-gradient(160deg, rgba(155, 109, 255, .12), rgba(155, 109, 255, .03));
+            border-color: rgba(155, 109, 255, .3);
+            box-shadow: 0 8px 30px rgba(155, 109, 255, .1);
+        }
+
+        .day-btn[data-c="full"].active {
+            background: linear-gradient(160deg, rgba(240, 96, 64, .12), rgba(240, 96, 64, .03));
+            border-color: rgba(240, 96, 64, .3);
+            box-shadow: 0 8px 30px rgba(240, 96, 64, .1);
+        }
+
+        /* ═══════════════════════════════════════════
+   WORKOUT PANEL
+   ═══════════════════════════════════════════ */
+        .panel {
+            display: none;
+            padding: 20px 0 80px;
+            animation: panelIn .5s ease
+        }
+
+        .panel.show {
+            display: block
+        }
+
+        @keyframes panelIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 24px 28px;
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .03);
+        }
+
+        .panel-header .left {
+            flex: 1;
+            min-width: 200px
+        }
+
+        .panel-header h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #111118;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -.01em
+        }
+
+        .panel-header h2 .type-tag {
+            font-size: .6rem;
+            padding: 5px 12px;
+            border-radius: var(--radius-xs);
+            font-weight: 700;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+        }
+
+        .panel-header .sub {
+            color: var(--text2);
+            margin-top: 4px;
+            font-size: .82rem;
+            font-weight: 500
+        }
+
+        .panel-header .sub strong {
+            color: var(--text);
+            font-weight: 600
+        }
+
+        .complete-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: .82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border2);
+            background: var(--surface);
+            color: var(--text2);
+        }
+
+        .complete-btn:hover {
+            border-color: var(--green);
+            color: var(--green);
+            background: var(--green-dim)
+        }
+
+        .complete-btn.is-done {
+            background: var(--green-dim);
+            border-color: rgba(52, 211, 153, .3);
+            color: var(--green)
+        }
+
+        .complete-btn .ic {
+            font-size: 1.2rem;
+            transition: transform .3s
+        }
+
+        .complete-btn.is-done .ic {
+            transform: scale(1.1)
+        }
+
+        /* ═══════════════════════════════════════════
+   EXERCISE CARD
+   ═══════════════════════════════════════════ */
+        .exercise {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+            transition: var(--transition);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .02);
+        }
+
+        .exercise:hover {
+            border-color: var(--border2);
+            background: var(--card-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, .04)
+        }
+
+        .exercise.checked {
+            border-color: rgba(80, 234, 160, .12);
+            background: linear-gradient(135deg, var(--card), rgba(80, 234, 160, .02))
+        }
+
+        .exercise.checked .ex-name {
+            text-decoration: line-through;
+            text-decoration-color: var(--text3);
+            opacity: .6
+        }
+
+        .ex-row {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            gap: 14px
+        }
+
+        /* Custom checkbox */
+        .cb-wrap {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0
+        }
+
+        .cb-wrap input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+            margin: 0
+        }
+
+        .cb-box {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 2px solid var(--text3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: transparent;
+            font-size: .7rem;
+        }
+
+        .cb-wrap input:checked+.cb-box {
+            background: var(--green);
+            border-color: var(--green);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(52, 211, 153, .3);
+            animation: cbPop .3s ease;
+        }
+
+        @keyframes cbPop {
+            0% {
+                transform: scale(1)
+            }
+
+            50% {
+                transform: scale(1.2)
+            }
+
+            100% {
+                transform: scale(1)
+            }
+        }
+
+        .ex-name {
+            flex: 1;
+            font-size: .9rem;
+            font-weight: 600;
+            color: #111118;
+            cursor: pointer;
+            transition: var(--transition)
+        }
+
+        .tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            align-items: center
+        }
+
+        .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: .62rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: var(--radius-xs);
+            white-space: nowrap;
+            letter-spacing: .2px;
+        }
+
+        .expand-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: var(--radius-sm);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text3);
+            font-size: .55rem;
+            flex-shrink: 0;
+        }
+
+        .expand-btn:hover {
+            background: var(--surface2);
+            color: var(--text)
+        }
+
+        .exercise.open .expand-btn {
+            background: var(--push);
+            color: #fff;
+            border-color: var(--push);
+            transform: rotate(180deg)
+        }
+
+        /* Expandable detail */
+        .ex-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .5s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .exercise.open .ex-detail {
+            max-height: 500px
+        }
+
+        .ex-detail-inner {
+            padding: 0 20px 20px;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media(max-width:640px) {
+            .ex-detail-inner {
+                grid-template-columns: 1fr;
+                gap: 14px
+            }
+        }
+
+        .gif-frame {
+            background: rgba(0, 0, 0, .5);
+            border-radius: 14px;
+            overflow: hidden;
+            aspect-ratio: 1/1;
+            position: relative;
+            border: 1px solid var(--border2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+        }
+
+        .gif-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: opacity .3s
+        }
+
+        .gif-frame .watermark {
+            position: absolute;
+            bottom: 6px;
+            right: 8px;
+            font-size: .5rem;
+            color: rgba(255, 255, 255, .3);
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, .5);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .detail-info h4 {
+            font-size: .62rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px
+        }
+
+        @media(max-width:400px) {
+            .detail-grid {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        .detail-cell {
+            background: rgba(255, 255, 255, .025);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            text-align: center;
+        }
+
+        .detail-cell .val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: .85rem;
+            font-weight: 700;
+            color: #111118
+        }
+
+        .detail-cell .key {
+            font-size: .6rem;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            font-weight: 600;
+            margin-top: 2px
+        }
+
+        .tech-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .3px;
+        }
+
+        /* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+        .site-footer {
+            text-align: center;
+            padding: 32px 24px 60px;
+            border-top: 1px solid var(--border);
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .site-footer p {
+            color: var(--text3);
+            font-size: .75rem;
+            font-weight: 500
+        }
+
+        .site-footer a {
+            color: var(--push);
+            text-decoration: none
+        }
+
+        .reset-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text3);
+            font-size: .72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .reset-link:hover {
+            border-color: var(--full);
+            color: var(--full)
+        }
+
+        /* ═══════════════════════════════════════════
+   CONFETTI
+   ═══════════════════════════════════════════ */
+        .confetti-box {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden
+        }
+
+        .conf {
+            position: absolute;
+            border-radius: 2px;
+            animation: confDrop 3s ease-in forwards
+        }
+
+        @keyframes confDrop {
+            0% {
+                transform: translateY(-20px) rotate(0deg) scale(1);
+                opacity: 1
+            }
+
+            80% {
+                opacity: .8
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(720deg) scale(.5);
+                opacity: 0
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+        @media(max-width:800px) {
+            .day-nav-inner {
+                display: flex;
+                overflow-x: auto;
+                padding: 4px 20px 12px;
+                gap: 12px;
+                scroll-snap-type: x mandatory;
+                grid-template-columns: none;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .day-nav-inner::-webkit-scrollbar {
+                display: none;
+            }
+
+            .day-btn {
+                flex: 0 0 80px;
+                scroll-snap-align: center;
+                min-width: 80px;
+            }
+        }
+
+        @media(max-width:480px) {
+            .day-nav-inner {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .day-btn {
+                padding: 10px 4px 8px;
+                font-size: .62rem;
+            }
+
+            .day-btn .d-emoji {
+                font-size: 1rem;
+            }
+
+            .ex-row {
+                padding: 14px 16px;
+                gap: 10px
+            }
+
+            .tags {
+                gap: 4px
+            }
+
+            .tag {
+                font-size: .58rem;
+                padding: 3px 7px
+            }
+
+            .panel-header {
+                padding: 18px
+            }
+
+            .dashboard {
+                padding: 14px
+            }
+
+            .stat .value {
+                font-size: 1.3rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-effects">
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+        <div class="bg-grid"></div>
+        <div class="bg-gradient"></div>
+    </div>
+
+    <div class="container">
+
+        <!-- ═══ HEADER ═══ -->
+        <header>
+            <div class="logo-row">
+                <div class="logo-icon">🏋️</div>
+                <div class="badge">Controle Semanal Ativo</div>
+            </div>
+            <h1>Treino <span>Semanal</span></h1>
+            <p class="week-info" id="weekLabel"></p>
+        </header>
+
+        <!-- ═══ DASHBOARD ═══ -->
+        <div class="dashboard">
+            <svg width="0" height="0">
+                <defs>
+                    <linearGradient id="progGrad" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="var(--push)" />
+                        <stop offset="50%" stop-color="var(--pull)" />
+                        <stop offset="100%" stop-color="var(--legs)" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <div class="stat accent">
+                <div class="value" id="statDays">0/7</div>
+                <div class="label">Dias Completos</div>
+            </div>
+            <div class="progress-section">
+                <div class="progress-row">
+                    <div class="progress-ring">
+                        <svg width="48" height="48" viewBox="0 0 48 48">
+                            <circle class="ring-bg" cx="24" cy="24" r="20" />
+                            <circle class="ring-fill" id="ringFill" cx="24" cy="24" r="20" stroke-dasharray="125.66"
+                                stroke-dashoffset="125.66" />
+                        </svg>
+                        <div class="ring-text" id="ringPct">0%</div>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar-label">
+                            <span>Progresso Semanal</span>
+                            <span class="pct" id="pctText">0 / 0</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="stat fire">
+                <div class="value" id="statStreak">0 🔥</div>
+                <div class="label">Sequência</div>
+            </div>
+        </div>
+
+        <!-- ═══ DAY NAV ═══ -->
+        <nav class="day-nav">
+            <div class="day-nav-inner" id="dayTabs"></div>
+        </nav>
+
+        <!-- ═══ PANELS ═══ -->
+        <main id="panels"></main>
+
+        <!-- ═══ FOOTER ═══ -->
+        <footer class="site-footer">
+            <p style="color:var(--text2);font-weight:600;margin-bottom:4px">Push / Pull / Legs + FullBody</p>
+            <p>Exercícios baseados nos protocolos dos PDFs &middot; Progresso salvo localmente</p>
+            <button class="reset-link" onclick="resetWeek()">🔄 Resetar Semana</button>
+        </footer>
+
+    </div><!-- .container -->
+
+    <script>
+        // ═══════════════════════════════════════════
+        // DATA
+        // ═══════════════════════════════════════════
+        const DAYS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        const SHORT = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM'];
+        const gd = id => `https://lh3.googleusercontent.com/d/${id}`;
+        const FB = gd('1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8');
+
+        const W = [
+            { // SEG — Push
+                label: 'A — Push', sub: 'Peito / Tríceps / Ombro', c: 'push', exs: [
+                    { n: 'Supino Reto', s: '5', r: '10', d: '1min', t: 'REST PAUSE', img: gd('1fmspp8ufXk-LbMy9t8XxG7TbkjvgfsaT') },
+                    { n: 'Supino Inclinado Halter', s: '4', r: '10', d: '45seg', t: '', img: gd('1AZJ79XqNwJMkl-Sz4lFSbIn1CARGLKHi') },
+                    { n: 'Cross Over', s: '3', r: '15', d: '1min', t: 'SLOW', img: gd('1r8kXucHXelSiUXG7iKzMF5t_AVuvNu5N') },
+                    { n: 'Tríceps Testa Polia', s: '4', r: '10', d: '45seg', t: '', img: gd('1qvchD55eVGMXdNPvXFT9N25B1b1YU-RI') },
+                    { n: 'Pulley Corda', s: '3', r: '12', d: '30seg', t: '', img: gd('1RZhap3zBgpVdfaBp2lbEjIKTLhist-G8') },
+                    { n: 'Paralela', s: '3', r: '—', d: '2min', t: 'EXAUSTÃO', img: gd('1-rIbW9ygaihZ0-CGdU6F5Ffy_XB2bbOa') },
+                    { n: 'Desenvolvimento Arnold', s: '3', r: '12', d: '1min', t: '', img: gd('1W6ibsEIde5mcJxui4rnwQiRdDsT1L1EO') },
+                ]
+            },
+            { // TER — Pull
+                label: 'B — Pull', sub: 'Costas / Bíceps', c: 'pull', exs: [
+                    { n: 'Levantamento Terra', s: '4', r: '12', d: '1min', t: '', img: gd('1ljNwzS9fKossboRcoMIWwZlajbF_sdds') },
+                    { n: 'Remada Curvada', s: '4', r: '10', d: '1min', t: '', img: gd('1RDBUzgVS3-nXH5Vp23xN_RUJWljgOChQ') },
+                    { n: 'Barra Fixa', s: '3', r: '—', d: '2min', t: 'EXAUSTÃO', img: gd('1ZuEyqWhYLjtPLNYFmSBHXfvWVgsNt6iY') },
+                    { n: 'Cavalinho', s: '3', r: '12', d: '45seg', t: '', img: gd('1GlwcKx2NyC9d4tLY7KzLG6iGCmMOCzRe') },
+                    { n: 'PullDown', s: '3', r: '12', d: '45seg', t: '', img: gd('1d5-lYx2e0VztuVt0JVh8XQ-S4bCI7ns0') },
+                    { n: 'Rosca Alternada', s: '4', r: '10', d: '30seg', t: '', img: gd('1A5OSmDDwM25JUXkqLa_DV_2aV9XDH_gg') },
+                    { n: 'Rosca Direta (Barra ou Halter)', s: '3', r: '12', d: '1min', t: 'BI-SET', img: gd('1ge1jnA1-6BH3GdfkiTZce5cYB5zY8s5e') },
+                    { n: 'Rosca Martelo', s: '3', r: '12', d: '1min', t: 'BI-SET', img: gd('1NJSD8adc6XzBobkMXKAQ2i8WzXc2bHJX') },
+                    { n: 'Elevação Lateral', s: '3', r: '15', d: '45seg', t: '', img: gd('1JTAkfullt5N3xJRXbJckvpyFz5axKjuZ') },
+                ]
+            },
+            { // QUA — Legs
+                label: 'C — Legs', sub: 'Pernas / Panturrilha', c: 'legs', exs: [
+                    { n: 'Agachamento Livre', s: '5', r: '8', d: '45seg', t: '', img: gd('1kd2C7PerZcg2vKtdB1RTyuLqxtxb8xnT') },
+                    { n: 'Afundo', s: '4', r: '16 passadas', d: '1min', t: '', img: gd('1-i_kZHTVlZtM-mHEWzWvSQBu2hkYboIg') },
+                    { n: 'Stiff', s: '3', r: '15', d: '1min', t: 'SLOW', img: gd('1uySwPdS6LBjI-WqIF_2tYHIVMbdDdGXC') },
+                    { n: 'Leg Press', s: '3', r: '15', d: '1min', t: 'SLOW', img: gd('1aze2Yc5RRF9bGQNzkVPuh7BnbG82evjv') },
+                    { n: 'Mesa Flexora', s: '4', r: '12', d: '30seg', t: '', img: gd('1CO8TAjIm60PXdLEFyZ3XzgU1dW9UOEbA') },
+                    { n: 'Panturrilha em Pé', s: '5', r: '10', d: '15seg', t: '', img: gd('1D9GaliZUyPMNKLGTKQKQklmIo5RrGv8a') },
+                    { n: 'Elevação Gêmeos', s: '3', r: '15', d: '45seg', t: '', img: gd('1cd6bthCXemX8zWFUJ4uJIuesq1S2YIq9') },
+                ]
+            },
+            { // QUI — Push
+                label: 'A — Push', sub: 'Peito / Tríceps / Ombro', c: 'push', exs: [
+                    { n: 'Supino Reto', s: '5', r: '10', d: '1min', t: 'REST PAUSE', img: gd('1fmspp8ufXk-LbMy9t8XxG7TbkjvgfsaT') },
+                    { n: 'Supino Inclinado Halter', s: '4', r: '10', d: '45seg', t: '', img: gd('1AZJ79XqNwJMkl-Sz4lFSbIn1CARGLKHi') },
+                    { n: 'Cross Over', s: '3', r: '15', d: '1min', t: 'SLOW', img: gd('1r8kXucHXelSiUXG7iKzMF5t_AVuvNu5N') },
+                    { n: 'Tríceps Testa Polia', s: '4', r: '10', d: '45seg', t: '', img: gd('1qvchD55eVGMXdNPvXFT9N25B1b1YU-RI') },
+                    { n: 'Pulley Corda', s: '3', r: '12', d: '30seg', t: '', img: gd('1RZhap3zBgpVdfaBp2lbEjIKTLhist-G8') },
+                    { n: 'Paralela', s: '3', r: '—', d: '2min', t: 'EXAUSTÃO', img: gd('1-rIbW9ygaihZ0-CGdU6F5Ffy_XB2bbOa') },
+                    { n: 'Desenvolvimento Arnold', s: '3', r: '12', d: '1min', t: '', img: gd('1W6ibsEIde5mcJxui4rnwQiRdDsT1L1EO') },
+                ]
+            },
+            { // SEX — Pull
+                label: 'B — Pull', sub: 'Costas / Bíceps', c: 'pull', exs: [
+                    { n: 'Levantamento Terra', s: '4', r: '12', d: '1min', t: '', img: gd('1ljNwzS9fKossboRcoMIWwZlajbF_sdds') },
+                    { n: 'Remada Curvada', s: '4', r: '10', d: '1min', t: '', img: gd('1RDBUzgVS3-nXH5Vp23xN_RUJWljgOChQ') },
+                    { n: 'Barra Fixa', s: '3', r: '—', d: '2min', t: 'EXAUSTÃO', img: gd('1ZuEyqWhYLjtPLNYFmSBHXfvWVgsNt6iY') },
+                    { n: 'Cavalinho', s: '3', r: '12', d: '45seg', t: '', img: gd('1GlwcKx2NyC9d4tLY7KzLG6iGCmMOCzRe') },
+                    { n: 'PullDown', s: '3', r: '12', d: '45seg', t: '', img: gd('1d5-lYx2e0VztuVt0JVh8XQ-S4bCI7ns0') },
+                    { n: 'Rosca Alternada', s: '4', r: '10', d: '30seg', t: '', img: gd('1A5OSmDDwM25JUXkqLa_DV_2aV9XDH_gg') },
+                    { n: 'Rosca Direta (Barra ou Halter)', s: '3', r: '12', d: '1min', t: 'BI-SET', img: gd('1ge1jnA1-6BH3GdfkiTZce5cYB5zY8s5e') },
+                    { n: 'Rosca Martelo', s: '3', r: '12', d: '1min', t: 'BI-SET', img: gd('1NJSD8adc6XzBobkMXKAQ2i8WzXc2bHJX') },
+                    { n: 'Elevação Lateral', s: '3', r: '15', d: '45seg', t: '', img: gd('1JTAkfullt5N3xJRXbJckvpyFz5axKjuZ') },
+                ]
+            },
+            { // SAB — Legs
+                label: 'C — Legs', sub: 'Pernas / Panturrilha', c: 'legs', exs: [
+                    { n: 'Agachamento Livre', s: '5', r: '8', d: '45seg', t: '', img: gd('1kd2C7PerZcg2vKtdB1RTyuLqxtxb8xnT') },
+                    { n: 'Afundo', s: '4', r: '16 passadas', d: '1min', t: '', img: gd('1-i_kZHTVlZtM-mHEWzWvSQBu2hkYboIg') },
+                    { n: 'Stiff', s: '3', r: '15', d: '1min', t: 'SLOW', img: gd('1uySwPdS6LBjI-WqIF_2tYHIVMbdDdGXC') },
+                    { n: 'Leg Press', s: '3', r: '15', d: '1min', t: 'SLOW', img: gd('1aze2Yc5RRF9bGQNzkVPuh7BnbG82evjv') },
+                    { n: 'Mesa Flexora', s: '4', r: '12', d: '30seg', t: '', img: gd('1CO8TAjIm60PXdLEFyZ3XzgU1dW9UOEbA') },
+                    { n: 'Panturrilha em Pé', s: '5', r: '10', d: '15seg', t: '', img: gd('1D9GaliZUyPMNKLGTKQKQklmIo5RrGv8a') },
+                    { n: 'Elevação Gêmeos', s: '3', r: '15', d: '45seg', t: '', img: gd('1cd6bthCXemX8zWFUJ4uJIuesq1S2YIq9') },
+                ]
+            },
+            { // DOM — FullBody
+                label: 'FullBody', sub: 'Corpo Inteiro', c: 'full', exs: [
+                    { n: 'Supino Reto', s: '5', r: '10', d: '1min', t: 'SLOW', img: gd('1fmspp8ufXk-LbMy9t8XxG7TbkjvgfsaT') },
+                    { n: 'Afundo', s: '4', r: '16 passadas', d: '1min', t: '', img: gd('1-i_kZHTVlZtM-mHEWzWvSQBu2hkYboIg') },
+                    { n: 'Remada Curvada', s: '5', r: '8', d: '2min', t: '', img: gd('1RDBUzgVS3-nXH5Vp23xN_RUJWljgOChQ') },
+                    { n: 'Flexão de Braço', s: '3', r: '—', d: '1min', t: 'EXAUSTÃO', img: gd('1sLzi_Xnmy4U_38qiVO1iP1DkO4dCNZuC') },
+                    { n: 'Desenvolvimento Arnold', s: '4', r: '10', d: '45seg', t: '', img: gd('1W6ibsEIde5mcJxui4rnwQiRdDsT1L1EO') },
+                    { n: 'Remada Sentado Triângulo', s: '5', r: '8', d: '30seg', t: '', img: gd('1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8') },
+                    { n: 'Mesa Flexora', s: '5', r: '10', d: '1min', t: '', img: gd('1CO8TAjIm60PXdLEFyZ3XzgU1dW9UOEbA') },
+                    { n: 'Pulley Corda', s: '4', r: '10', d: '45seg', t: '', img: gd('1RZhap3zBgpVdfaBp2lbEjIKTLhist-G8') },
+                    { n: 'Rosca Alternada', s: '4', r: '10', d: '1min', t: '', img: gd('1A5OSmDDwM25JUXkqLa_DV_2aV9XDH_gg') },
+                    { n: 'Tríceps Coice', s: '4', r: '10', d: '1min', t: '', img: gd('1nmY6YXTLi0TIb6NxeSLDGKjBn2i0q7ko') },
+                    { n: 'Rosca Martelo Unilateral', s: '4', r: '8', d: '—', t: '', img: gd('1NJSD8adc6XzBobkMXKAQ2i8WzXc2bHJX') },
+                ]
+            },
+        ];
+
+        const TC = {
+            'SLOW': { bg: 'rgba(245,158,11,.08)', c: '#f59e0b', b: 'rgba(245,158,11,.15)' },
+            'EXAUSTÃO': { bg: 'rgba(255,112,112,.08)', c: '#ff7070', b: 'rgba(255,112,112,.15)' },
+            'REST PAUSE': { bg: 'rgba(91,154,255,.08)', c: '#5b9aff', b: 'rgba(91,154,255,.15)' },
+            'BI-SET': { bg: 'rgba(176,141,255,.08)', c: '#b08dff', b: 'rgba(176,141,255,.15)' },
+        };
+        const CM = {
+            push: { tag: 'rgba(79,110,247,.1)', tc: '#4f6ef7', bg: 'rgba(79,110,247,.05)', bc: '#4f6ef7' },
+            pull: { tag: 'rgba(12,184,138,.08)', tc: '#0cb88a', bg: 'rgba(12,184,138,.05)', bc: '#0cb88a' },
+            legs: { tag: 'rgba(155,109,255,.08)', tc: '#9b6dff', bg: 'rgba(155,109,255,.05)', bc: '#9b6dff' },
+            full: { tag: 'rgba(240,96,64,.08)', tc: '#f06040', bg: 'rgba(240,96,64,.05)', bc: '#f06040' },
+        };
+
+        // ═══ STATE ═══
+        function weekKey() {
+            const d = new Date(), y = d.getFullYear(), j = new Date(y, 0, 1);
+            return `t_${y}_w${Math.ceil(((d - j) / 864e5 + j.getDay() + 1) / 7)}`;
+        }
+        let S = {}; const K = weekKey();
+        function load() { try { S = JSON.parse(localStorage.getItem(K)) || {} } catch (e) { S = {} } }
+        function save() { localStorage.setItem(K, JSON.stringify(S)) }
+        function exDone(d, i) { return S[`${d}_${i}`] === true }
+        function setEx(d, i, v) { S[`${d}_${i}`] = v; save() }
+        function dayDone(d) { return W[d].exs.every((_, i) => exDone(d, i)) }
+        function todayIdx() { const d = new Date().getDay(); return d === 0 ? 6 : d - 1 }
+
+        // ═══ RENDER TABS ═══
+        const DAY_EMOJI = ['💪', '🏋️', '🦵', '💪', '🏋️', '🦵', '🔥'];
+        const RING_COLORS = { push: '#4f6ef7', pull: '#0cb88a', legs: '#9b6dff', full: '#f06040' };
+        function getDayPct(d) {
+            const exs = W[d].exs;
+            let done = 0;
+            exs.forEach((_, i) => { if (exDone(d, i)) done++; });
+            return exs.length ? Math.round(done / exs.length * 100) : 0;
+        }
+        function renderTabs() {
+            const el = document.getElementById('dayTabs'); el.innerHTML = '';
+            const ti = todayIdx();
+            DAYS.forEach((name, i) => {
+                const pct = getDayPct(i);
+                const circ = 2 * Math.PI * 12; // r=12
+                const offset = circ - (circ * pct / 100);
+                const sc = RING_COLORS[W[i].c];
+                const dn = dayDone(i);
+                const b = document.createElement('button');
+                b.className = 'day-btn' + (i === 0 ? ' active' : '') + (i === ti ? ' today' : '') + (dn ? ' done' : '');
+                b.dataset.day = i; b.dataset.c = W[i].c;
+                let html = `<span class="d-emoji">${DAY_EMOJI[i]}</span>`;
+                html += `<span class="d-name">${SHORT[i]}</span>`;
+                html += `<span class="d-type">${W[i].label}</span>`;
+                html += `<div class="d-ring"><svg width="30" height="30" viewBox="0 0 30 30">`;
+                html += `<circle class="ring-bg" cx="15" cy="15" r="12"/>`;
+                html += `<circle class="ring-val" cx="15" cy="15" r="12" stroke="${dn ? '#3be8a0' : sc}" stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"/>`;
+                html += `</svg></div>`;
+                if (i === ti) html += `<span class="d-hoje">HOJE</span>`;
+                b.innerHTML = html;
+                b.onclick = () => switchDay(i);
+                el.appendChild(b);
+            });
+        }
+
+        // ═══ RENDER PANELS ═══
+        function renderPanels() {
+            const el = document.getElementById('panels'); el.innerHTML = '';
+            W.forEach((w, di) => {
+                const cm = CM[w.c];
+                let h = `<div class="panel${di === 0 ? ' show' : ''}" id="p-${di}">`;
+                h += `<div class="panel-header"><div class="left">`;
+                h += `<h2><span class="type-tag" style="background:${cm.tag};color:${cm.tc}">${w.label}</span>${w.sub}</h2>`;
+                h += `<p class="sub">${DAYS[di]} &middot; <strong>${w.exs.length} exercícios</strong></p></div>`;
+                h += `<button class="complete-btn${dayDone(di) ? ' is-done' : ''}" id="dayBtn${di}" onclick="toggleDay(${di})">`;
+                h += `<span class="ic">${dayDone(di) ? '✅' : '☐'}</span>${dayDone(di) ? 'Concluído' : 'Marcar Tudo'}</button></div>`;
+
+                w.exs.forEach((ex, ei) => {
+                    const dn = exDone(di, ei);
+                    h += `<div class="exercise${dn ? ' checked' : ''}" id="x-${di}-${ei}">`;
+                    h += `<div class="ex-row">`;
+                    h += `<label class="cb-wrap"><input type="checkbox" ${dn ? 'checked' : ''} onchange="toggleEx(${di},${ei},this.checked)"><span class="cb-box">✓</span></label>`;
+                    h += `<span class="ex-name" onclick="toggleOpen(${di},${ei})">${ex.n}</span>`;
+                    h += `<div class="tags">`;
+                    h += `<span class="tag" style="background:${cm.bg};color:${cm.bc}">${ex.s}×${ex.r}</span>`;
+                    h += `<span class="tag" style="background:rgba(255,255,255,.03);color:var(--text3)">⏱${ex.d}</span>`;
+                    if (ex.t) { const tc = TC[ex.t] || TC.SLOW; h += `<span class="tag" style="background:${tc.bg};color:${tc.c};border:1px solid ${tc.b}">${ex.t}</span>`; }
+                    h += `</div>`;
+                    h += `<button class="expand-btn" onclick="toggleOpen(${di},${ei})">▼</button>`;
+                    h += `</div>`;
+                    h += `<div class="ex-detail"><div class="ex-detail-inner">`;
+                    h += `<div class="gif-frame"><img src="${ex.img}" alt="${ex.n}" loading="lazy" onerror="this.src='${FB}'"><span class="watermark">GIF Demo</span></div>`;
+                    h += `<div class="detail-info"><h4 style="color:${cm.tc}">Detalhes do Exercício</h4>`;
+                    h += `<div class="detail-grid">`;
+                    h += `<div class="detail-cell"><div class="val">${ex.s}</div><div class="key">Séries</div></div>`;
+                    h += `<div class="detail-cell"><div class="val">${ex.r}</div><div class="key">Reps</div></div>`;
+                    h += `<div class="detail-cell"><div class="val">${ex.d}</div><div class="key">Descanso</div></div>`;
+                    h += `</div>`;
+                    if (ex.t) { const tc = TC[ex.t] || TC.SLOW; h += `<span class="tech-pill" style="background:${tc.bg};color:${tc.c};border:1px solid ${tc.b}">⚡ ${ex.t}</span>`; }
+                    h += `</div></div></div></div>`;
+                });
+                h += `</div>`;
+                el.innerHTML += h;
+            });
+        }
+
+        // ═══ ACTIONS ═══
+        function switchDay(i) {
+            document.querySelectorAll('.day-btn').forEach(b => b.classList.toggle('active', +b.dataset.day === i));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+            document.getElementById('p-' + i).classList.add('show');
+        }
+        function toggleOpen(d, i) { document.getElementById('x-' + d + '-' + i).classList.toggle('open') }
+        function toggleEx(d, i, v) {
+            setEx(d, i, v);
+            const card = document.getElementById('x-' + d + '-' + i);
+            card.classList.toggle('checked', v);
+            updateDayBtn(d); updateProgress(); updateTabs();
+            if (v) { card.style.transform = 'scale(1.005)'; setTimeout(() => card.style.transform = '', 200); }
+        }
+        function toggleDay(d) {
+            const all = dayDone(d);
+            W[d].exs.forEach((_, i) => {
+                setEx(d, i, !all);
+                const cb = document.querySelector(`#x-${d}-${i} input[type=checkbox]`);
+                if (cb) cb.checked = !all;
+                document.getElementById('x-' + d + '-' + i).classList.toggle('checked', !all);
+            });
+            updateDayBtn(d); updateProgress(); updateTabs();
+            if (!all) confetti();
+        }
+        function updateDayBtn(d) {
+            const b = document.getElementById('dayBtn' + d), dn = dayDone(d);
+            b.className = 'complete-btn' + (dn ? ' is-done' : '');
+            b.innerHTML = `<span class="ic">${dn ? '✅' : '☐'}</span>${dn ? 'Concluído' : 'Marcar Tudo'}`;
+        }
+        function updateTabs() {
+            const circ = 2 * Math.PI * 12;
+            document.querySelectorAll('.day-btn').forEach(b => {
+                const d = +b.dataset.day, dn = dayDone(d);
+                const pct = getDayPct(d);
+                const offset = circ - (circ * pct / 100);
+                b.classList.toggle('done', dn);
+                const ring = b.querySelector('.ring-val');
+                if (ring) {
+                    ring.setAttribute('stroke-dashoffset', offset.toFixed(1));
+                    ring.setAttribute('stroke', dn ? '#22c77e' : RING_COLORS[W[d].c]);
+                }
+            });
+        }
+        function updateProgress() {
+            let tot = 0, dn = 0;
+            W.forEach((w, di) => w.exs.forEach((_, ei) => { tot++; if (exDone(di, ei)) dn++; }));
+            const p = tot ? Math.round(dn / tot * 100) : 0;
+            document.getElementById('pctText').textContent = `${dn} / ${tot}`;
+            document.getElementById('progressFill').style.width = p + '%';
+            document.getElementById('ringPct').textContent = p + '%';
+            const circ = 125.66;
+            document.getElementById('ringFill').style.strokeDashoffset = circ - (circ * p / 100);
+
+            let dc = 0, streak = 0, mx = 0;
+            for (let i = 0; i < 7; i++) { if (dayDone(i)) { dc++; streak++; if (streak > mx) mx = streak } else streak = 0 }
+            document.getElementById('statDays').textContent = dc + '/7';
+            document.getElementById('statStreak').textContent = mx + ' 🔥';
+        }
+        function resetWeek() {
+            if (!confirm('Resetar todo o progresso desta semana?')) return;
+            localStorage.removeItem(K); S = {};
+            renderPanels(); renderTabs(); updateProgress();
+        }
+        function confetti() {
+            const box = document.createElement('div'); box.className = 'confetti-box'; document.body.appendChild(box);
+            const cols = ['#5b9aff', '#00e5b8', '#b08dff', '#ff7070', '#f59e0b', '#34d399'];
+            for (let i = 0; i < 50; i++) {
+                const c = document.createElement('div'); c.className = 'conf';
+                c.style.left = Math.random() * 100 + '%';
+                c.style.background = cols[Math.floor(Math.random() * cols.length)];
+                c.style.animationDelay = Math.random() * 1.2 + 's';
+                c.style.animationDuration = (2 + Math.random() * 2) + 's';
+                c.style.width = (5 + Math.random() * 7) + 'px';
+                c.style.height = (5 + Math.random() * 7) + 'px';
+                box.appendChild(c);
+            }
+            setTimeout(() => box.remove(), 4500);
+        }
+        function setWeekLabel() {
+            const now = new Date(), mon = new Date(now);
+            const diff = mon.getDate() - mon.getDay() + (mon.getDay() === 0 ? -6 : 1);
+            mon.setDate(diff); const sun = new Date(mon); sun.setDate(sun.getDate() + 6);
+            const f = d => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+            document.getElementById('weekLabel').textContent = `${f(mon)} — ${f(sun)} · ${now.getFullYear()}`;
+        }
+
+        // ═══ INIT ═══
+        load(); setWeekLabel(); renderTabs(); renderPanels(); updateProgress();
+        switchDay(todayIdx());
+    </script>
+</body>
+
+</html>

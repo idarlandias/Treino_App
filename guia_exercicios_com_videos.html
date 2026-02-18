@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolo Calistenia — Guia Visual com Demonstracoes</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06090f;--card:#0c1220;--surface:#111a2e;
+  --accent:#4f8cff;--accent2:#00d4aa;--red:#ff6b6b;
+  --warm:#ffb347;--purple:#a78bfa;
+  --text:#e8ecf4;--text2:#94a3c0;--border:#1a2744;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+.hero{text-align:center;padding:48px 24px 28px}
+.hero::after{content:'';display:block;max-width:600px;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:28px auto 0}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);color:var(--accent2);padding:5px 14px;border-radius:100px;font-size:.72rem;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.5rem);font-weight:700;color:#fff}
+.hero h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--text2);margin-top:8px;font-size:.9rem}
+.tabs{display:flex;justify-content:center;gap:6px;padding:20px 16px;position:sticky;top:0;z-index:20;background:linear-gradient(var(--bg) 65%,transparent);flex-wrap:wrap}
+.tab{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:9px 18px;border-radius:11px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:.3s;position:relative;overflow:hidden}
+.tab::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:0;transition:.3s}
+.tab:hover{border-color:var(--accent);color:#fff}
+.tab.active{border-color:transparent;color:#fff;box-shadow:0 4px 20px rgba(79,140,255,.25)}
+.tab.active::before{opacity:1}
+.tab em{position:relative;z-index:1;font-style:normal}
+.panel{max-width:900px;margin:0 auto;padding:0 20px 40px;display:none}
+.panel.show{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.panel-head{margin-bottom:28px}
+.panel-head h2{font-size:1.35rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px}
+.panel-head h2 .tag{font-size:.65rem;padding:4px 10px;border-radius:6px;font-weight:700;letter-spacing:.5px}
+.panel-head p{color:var(--text2);margin-top:4px;font-size:.85rem}
+.ex{background:var(--card);border:1px solid var(--border);border-radius:18px;margin-bottom:14px;overflow:hidden;transition:.3s}
+.ex:hover{border-color:rgba(79,140,255,.25)}
+.ex-top{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;gap:12px}
+.ex-top h3{font-size:.95rem;font-weight:600;color:#fff;flex:1}
+.reps{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--accent2);background:rgba(0,212,170,.08);padding:3px 10px;border-radius:7px;white-space:nowrap}
+.chevron{width:28px;height:28px;border-radius:8px;background:var(--surface);display:flex;align-items:center;justify-content:center;transition:.3s;flex-shrink:0;color:var(--text2);font-size:.7rem}
+.ex.open .chevron{background:var(--accent);color:#fff;transform:rotate(180deg)}
+.ex-body{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1)}
+.ex.open .ex-body{max-height:1400px}
+.ex-inner{padding:0 20px 20px;display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start}
+@media(max-width:680px){.ex-inner{grid-template-columns:1fr;gap:16px}}
+.vid-box{background:#000;border-radius:14px;overflow:hidden;aspect-ratio:1/1;position:relative;border:1px solid var(--border)}
+.vid-box img{width:100%;height:100%;object-fit:cover;display:block}
+.vid-box .source{position:absolute;bottom:6px;right:8px;font-size:.55rem;color:rgba(255,255,255,.35);font-family:'Space Mono',monospace;background:rgba(0,0,0,.5);padding:2px 6px;border-radius:4px}
+.info h4{font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);margin-bottom:12px;font-weight:700}
+.step{display:flex;gap:10px;margin-bottom:10px}
+.step-n{width:22px;height:22px;border-radius:7px;background:var(--surface);border:1px solid var(--border);color:var(--accent);font-family:'Space Mono',monospace;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step p{font-size:.85rem;line-height:1.5}
+.tip{margin-top:12px;padding:10px 14px;background:rgba(255,179,71,.06);border:1px solid rgba(255,179,71,.12);border-radius:10px;display:flex;gap:8px}
+.tip p{font-size:.8rem;color:var(--warm);line-height:1.45}
+.muscles{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.muscle{font-size:.65rem;padding:2px 8px;border-radius:5px;background:rgba(167,139,250,.08);color:var(--purple);font-weight:600;border:1px solid rgba(167,139,250,.12)}
+.footer{text-align:center;padding:32px 20px 56px;border-top:1px solid var(--border);max-width:900px;margin:0 auto}
+.footer p{color:var(--text2);font-size:.8rem}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="pill">Guia Visual com Demonstracoes Reais</div>
+  <h1>Protocolo de <span>Calistenia</span></h1>
+  <p>GIFs animados mostrando a execucao correta de cada exercicio</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-t="a"><em>Treino A</em></button>
+  <button class="tab" data-t="b"><em>Treino B</em></button>
+  <button class="tab" data-t="c"><em>Treino C</em></button>
+  <button class="tab" data-t="h"><em>HIIT Cardio</em></button>
+</div>
+
+<!-- TREINO A -->
+<div class="panel show" id="p-a">
+  <div class="panel-head">
+    <h2><span class="tag" style="background:rgba(79,140,255,.12);color:var(--accent)">TREINO A</span>Peito, Ombro e Triceps</h2>
+    <p>Foco em empurrar — 6 exercicios — ~40 min</p>
+  </div>
+  
+  <div class="ex open">
+    <div class="ex-top"><h3>Flexao</h3><span class="reps">4 × 10-15</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1d5-lYx2e0VztuVt0JVh8XQ-S4bCI7ns0" alt="Flexao" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Maos na largura dos ombros, corpo reto da cabeca aos pes. Core contraido.</p></div><div class="step"><div class="step-n">2</div><p>Desce controlado ate o peito quase encostar no chao. Cotovelos a ~45° do tronco.</p></div><div class="step"><div class="step-n">3</div><p>Empurra o chao com forca pra subir, sem travar os cotovelos no topo.</p></div>
+        <div class="tip"><span>💡</span><p>Muito pesada? Comeca com as maos num banco ou sofa e vai abaixando a altura.</p></div>
+        <div class="muscles"><span class="muscle">Peitoral</span><span class="muscle">Triceps</span><span class="muscle">Deltoide Anterior</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Flexao Diamante</h3><span class="reps">3 × 8-12</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1GlwcKx2NyC9d4tLY7KzLG6iGCmMOCzRe" alt="Flexao Diamante" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Maos juntas formando um losango — indicadores e polegares se tocam.</p></div><div class="step"><div class="step-n">2</div><p>Desce controlado com os cotovelos colados ao corpo.</p></div><div class="step"><div class="step-n">3</div><p>Empurra pra cima focando na contracao do triceps.</p></div>
+        <div class="tip"><span>💡</span><p>Se nao consegue 8 reps, faz de joelhos ate ganhar forca.</p></div>
+        <div class="muscles"><span class="muscle">Triceps</span><span class="muscle">Peitoral Interno</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Mergulho em Cadeira (Triceps)</h3><span class="reps">4 × 10-15</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1FMs3eFx5teDXkc87qE9-RyIfF82Guyv5" alt="Mergulho em Cadeira (Triceps)" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Maos na borda da cadeira/banco, dedos pra frente. Pernas esticadas.</p></div><div class="step"><div class="step-n">2</div><p>Desce dobrando os cotovelos ate ~90°. Costas perto da cadeira.</p></div><div class="step"><div class="step-n">3</div><p>Empurra pra cima com a forca do triceps.</p></div>
+        <div class="tip"><span>💡</span><p>Facilitar: dobre os joelhos. Dificultar: pes numa segunda cadeira.</p></div>
+        <div class="muscles"><span class="muscle">Triceps</span><span class="muscle">Deltoide Anterior</span><span class="muscle">Peitoral Inferior</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Flexao Pike (Ombro)</h3><span class="reps">3 × 8-12</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1nmY6YXTLi0TIb6NxeSLDGKjBn2i0q7ko" alt="Flexao Pike (Ombro)" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Posicao de flexao, empurra o quadril pra cima formando um V invertido.</p></div><div class="step"><div class="step-n">2</div><p>Desce a cabeca em direcao ao chao entre as maos.</p></div><div class="step"><div class="step-n">3</div><p>Empurra pra cima. Foco nos deltoides (ombros).</p></div>
+        <div class="tip"><span>💡</span><p>Pes mais perto das maos = mais dificil. E a base pro handstand pushup.</p></div>
+        <div class="muscles"><span class="muscle">Deltoide</span><span class="muscle">Triceps</span><span class="muscle">Trapezio</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Flexao Hindu</h3><span class="reps">3 × 8-10</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1ljNwzS9fKossboRcoMIWwZlajbF_sdds" alt="Flexao Hindu" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Comeca em V invertido. Mergulha o corpo pra frente e pra baixo.</p></div><div class="step"><div class="step-n">2</div><p>Desliza o peito rente ao chao num arco fluido.</p></div><div class="step"><div class="step-n">3</div><p>Termina arqueando as costas (cobra), volta ao V.</p></div>
+        <div class="tip"><span>💡</span><p>Movimento fluido e circular. Trabalha peito, ombro e flexibilidade.</p></div>
+        <div class="muscles"><span class="muscle">Peitoral</span><span class="muscle">Deltoide</span><span class="muscle">Triceps</span><span class="muscle">Erector Spinae</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Prancha Frontal</h3><span class="reps">3 × 30-45s</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1hOS2-l4EFHX9xeutX8GCIBk6k85ahUdy" alt="Prancha Frontal" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Apoio nos antebracos e pontas dos pes. Corpo alinhado como tabua.</p></div><div class="step"><div class="step-n">2</div><p>Contrai abdomen e gluteos. Quadril nao sobe nem desce.</p></div><div class="step"><div class="step-n">3</div><p>Mantem a posicao respirando normalmente.</p></div>
+        <div class="tip"><span>💡</span><p>Se tremer, ta funcionando. Foca na respiracao estavel.</p></div>
+        <div class="muscles"><span class="muscle">Reto Abdominal</span><span class="muscle">Transverso</span><span class="muscle">Obliquos</span><span class="muscle">Gluteos</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- TREINO B -->
+<div class="panel" id="p-b">
+  <div class="panel-head">
+    <h2><span class="tag" style="background:rgba(0,212,170,.1);color:var(--accent2)">TREINO B</span>Perna e Core</h2>
+    <p>Membros inferiores + estabilidade — 6 exercicios — ~40 min</p>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Agachamento Livre</h3><span class="reps">4 × 15-20</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1y9fhKMGFh9fj_LST2CvkIAVCVp-fEymz" alt="Agachamento Livre" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Pes na largura dos ombros, pontas levemente pra fora.</p></div><div class="step"><div class="step-n">2</div><p>Desce como se fosse sentar. Joelhos na direcao dos pes.</p></div><div class="step"><div class="step-n">3</div><p>Coxas paralelas ao chao. Sobe empurrando com os calcanhares.</p></div>
+        <div class="tip"><span>💡</span><p>Bracos a frente ajudam no equilibrio. Peso nos calcanhares.</p></div>
+        <div class="muscles"><span class="muscle">Quadriceps</span><span class="muscle">Gluteos</span><span class="muscle">Isquiotibiais</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Afundo Alternado</h3><span class="reps">4 × 12 cada</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1sLzi_Xnmy4U_38qiVO1iP1DkO4dCNZuC" alt="Afundo Alternado" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Em pe, da um passo largo pra frente mantendo tronco reto.</p></div><div class="step"><div class="step-n">2</div><p>Desce ate o joelho de tras quase tocar o chao. Ambos a ~90°.</p></div><div class="step"><div class="step-n">3</div><p>Empurra com a perna da frente pra voltar. Alterna.</p></div>
+        <div class="tip"><span>💡</span><p>Joelho da frente nao passa a ponta do pe. Tronco ereto.</p></div>
+        <div class="muscles"><span class="muscle">Quadriceps</span><span class="muscle">Gluteos</span><span class="muscle">Isquiotibiais</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Agachamento Bulgaro</h3><span class="reps">3 × 10 cada</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1A5OSmDDwM25JUXkqLa_DV_2aV9XDH_gg" alt="Agachamento Bulgaro" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>De costas pro sofa, apoia o peito do pe de tras no assento.</p></div><div class="step"><div class="step-n">2</div><p>Desce controlado ate o joelho de tras quase tocar o chao.</p></div><div class="step"><div class="step-n">3</div><p>Sobe empurrando com a perna da frente. Faz todas reps de um lado, troca.</p></div>
+        <div class="tip"><span>💡</span><p>Um dos melhores exercicios pra quadriceps e gluteos. Se tremer, e normal.</p></div>
+        <div class="muscles"><span class="muscle">Quadriceps</span><span class="muscle">Gluteo Maximo</span><span class="muscle">Core</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Elevacao de Quadril (Ponte)</h3><span class="reps">4 × 15-20</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1D1N7rVwtS6ZYj1VC6nNSf8LwKKfI47Pt" alt="Elevacao de Quadril (Ponte)" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Deitado de barriga pra cima, joelhos dobrados, pes no chao.</p></div><div class="step"><div class="step-n">2</div><p>Empurra o quadril pra cima apertando os gluteos.</p></div><div class="step"><div class="step-n">3</div><p>Segura 1-2s no topo, desce controlado sem encostar no chao.</p></div>
+        <div class="tip"><span>💡</span><p>Pra dificultar: faz unilateral (uma perna estendida).</p></div>
+        <div class="muscles"><span class="muscle">Gluteo Maximo</span><span class="muscle">Isquiotibiais</span><span class="muscle">Core</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Panturrilha em Pe (Unilateral)</h3><span class="reps">4 × 15 cada</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1Nb5o_fOokk-IqLRvI9eb0SSLzelXTx6T" alt="Panturrilha em Pe (Unilateral)" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Em pe, apoio na parede. Uma perna flexionada atras.</p></div><div class="step"><div class="step-n">2</div><p>Sobe na ponta do pe o maximo possivel, segura 1s.</p></div><div class="step"><div class="step-n">3</div><p>Desce controlado. Usar degrau aumenta amplitude.</p></div>
+        <div class="tip"><span>💡</span><p>Panturrilha forte previne lesao e melhora explosao.</p></div>
+        <div class="muscles"><span class="muscle">Gastrocnemio</span><span class="muscle">Soleo</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Prancha Lateral</h3><span class="reps">3 × 30s cada</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1NJSD8adc6XzBobkMXKAQ2i8WzXc2bHJX" alt="Prancha Lateral" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>De lado, apoio no antebraco. Corpo reto, pes empilhados.</p></div><div class="step"><div class="step-n">2</div><p>Levanta o quadril. Linha reta da cabeca aos pes.</p></div><div class="step"><div class="step-n">3</div><p>Mantem contraindo o obliquo. Troca de lado.</p></div>
+        <div class="tip"><span>💡</span><p>Essencial pra cintura definida. Trabalha obliquos intensamente.</p></div>
+        <div class="muscles"><span class="muscle">Obliquos</span><span class="muscle">Gluteo Medio</span><span class="muscle">Core</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- TREINO C -->
+<div class="panel" id="p-c">
+  <div class="panel-head">
+    <h2><span class="tag" style="background:rgba(167,139,250,.1);color:var(--purple)">TREINO C</span>Costas, Biceps e Core</h2>
+    <p>Foco em puxar — mesa, vassoura e mochila — 6 exercicios — ~40 min</p>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Remada Invertida (mesa)</h3><span class="reps">4 × 10-12</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1fmspp8ufXk-LbMy9t8XxG7TbkjvgfsaT" alt="Remada Invertida (mesa)" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Deita embaixo de mesa firme. Segura na borda.</p></div><div class="step"><div class="step-n">2</div><p>Corpo reto, calcanhares no chao. Puxa o peito pra mesa.</p></div><div class="step"><div class="step-n">3</div><p>Aperta escapulas no topo, desce controlado.</p></div>
+        <div class="tip"><span>💡</span><p>Alternativa: vassoura entre duas cadeiras. Melhor substituto da barra fixa.</p></div>
+        <div class="muscles"><span class="muscle">Dorsal</span><span class="muscle">Romboides</span><span class="muscle">Biceps</span><span class="muscle">Trapezio</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Superman (Lombar)</h3><span class="reps">3 × 15</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1cd6bthCXemX8zWFUJ4uJIuesq1S2YIq9" alt="Superman (Lombar)" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Deitado de brucos, bracos a frente, pernas esticadas.</p></div><div class="step"><div class="step-n">2</div><p>Levanta bracos e pernas ao mesmo tempo, contraindo lombar.</p></div><div class="step"><div class="step-n">3</div><p>Segura 1-2s no topo, desce controlado. Queixo neutro.</p></div>
+        <div class="tip"><span>💡</span><p>Fortalece cadeia posterior e previne dor nas costas.</p></div>
+        <div class="muscles"><span class="muscle">Eretor da Espinha</span><span class="muscle">Gluteos</span><span class="muscle">Trapezio</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Flexao Larga</h3><span class="reps">3 × 10-12</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1ge1jnA1-6BH3GdfkiTZce5cYB5zY8s5e" alt="Flexao Larga" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Flexao com maos bem mais abertas que os ombros.</p></div><div class="step"><div class="step-n">2</div><p>Desce controlado sentindo o peito esticar.</p></div><div class="step"><div class="step-n">3</div><p>Sobe focando na contracao do peitoral externo.</p></div>
+        <div class="tip"><span>💡</span><p>Mais enfase no peitoral. Complementa as outras variacoes.</p></div>
+        <div class="muscles"><span class="muscle">Peitoral (externo)</span><span class="muscle">Deltoide Anterior</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Rosca com Mochila/Galao</h3><span class="reps">3 × 12-15</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1_CnTy4aBr_Jb9cwYR4xX247QiKhlf2CO" alt="Rosca com Mochila/Galao" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Em pe segurando galao de agua (5L) ou mochila com livros.</p></div><div class="step"><div class="step-n">2</div><p>Cotovelo fixo na lateral. Sobe dobrando o braco.</p></div><div class="step"><div class="step-n">3</div><p>Contrai biceps no topo, desce sem balancar o corpo.</p></div>
+        <div class="tip"><span>💡</span><p>Galao 5L = ~5kg. Mochila com livros chega a 8-10kg facil.</p></div>
+        <div class="muscles"><span class="muscle">Biceps</span><span class="muscle">Braquial</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Prancha com Toque no Ombro</h3><span class="reps">3 × 10 cada</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1REwtt2tZ2BAIOFOlHsGq01wgiFz3jPzj" alt="Prancha com Toque no Ombro" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Prancha alta (bracos esticados).</p></div><div class="step"><div class="step-n">2</div><p>Tira uma mao e toca o ombro oposto. Corpo nao gira.</p></div><div class="step"><div class="step-n">3</div><p>Volta e repete do outro lado. Quadril firme.</p></div>
+        <div class="tip"><span>💡</span><p>Anti-rotacao pura. Quanto mais lento, mais efetivo.</p></div>
+        <div class="muscles"><span class="muscle">Core</span><span class="muscle">Deltoide</span><span class="muscle">Obliquos</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Abdominal Bicicleta</h3><span class="reps">3 × 20 total</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1-Sq0LuLfB2rfy_C64m2qGs-gyokyONM_" alt="Abdominal Bicicleta" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Deitado, maos atras da cabeca, pernas elevadas.</p></div><div class="step"><div class="step-n">2</div><p>Cotovelo direito ao joelho esquerdo, estica a outra perna.</p></div><div class="step"><div class="step-n">3</div><p>Alterna num movimento de pedalar. Nao puxa o pescoco.</p></div>
+        <div class="tip"><span>💡</span><p>O tronco gira, nao o pescoco. Sente o obliquo queimar.</p></div>
+        <div class="muscles"><span class="muscle">Obliquos</span><span class="muscle">Reto Abdominal</span><span class="muscle">Iliopsoas</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- HIIT -->
+<div class="panel" id="p-h">
+  <div class="panel-head">
+    <h2><span class="tag" style="background:rgba(239,68,68,.1);color:var(--red)">HIIT</span>Cardio — Queima Maxima</h2>
+    <p>4 rodadas | 30s trabalho / 15s descanso | 1-2 min entre rodadas | ~25 min</p>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Burpee</h3><span class="reps">30s ON / 15s OFF</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1D9GaliZUyPMNKLGTKQKQklmIo5RrGv8a" alt="Burpee" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Em pe — agacha, maos no chao.</p></div><div class="step"><div class="step-n">2</div><p>Joga pes pra tras (flexao), faz uma flexao.</p></div><div class="step"><div class="step-n">3</div><p>Puxa pes de volta, salta com bracos pra cima. Repete.</p></div>
+        <div class="tip"><span>💡</span><p>Pesado? Tira a flexao ou o salto. O importante e manter o ritmo.</p></div>
+        <div class="muscles"><span class="muscle">Corpo Inteiro</span><span class="muscle">Cardio</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Mountain Climber</h3><span class="reps">30s ON / 15s OFF</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1CO8TAjIm60PXdLEFyZ3XzgU1dW9UOEbA" alt="Mountain Climber" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Prancha alta (bracos esticados).</p></div><div class="step"><div class="step-n">2</div><p>Puxa um joelho ao peito rapidamente.</p></div><div class="step"><div class="step-n">3</div><p>Alterna rapido mantendo core ativado.</p></div>
+        <div class="tip"><span>💡</span><p>Quadril baixo e estavel. Velocidade controlada vence.</p></div>
+        <div class="muscles"><span class="muscle">Core</span><span class="muscle">Iliopsoas</span><span class="muscle">Cardio</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Jumping Jack</h3><span class="reps">30s ON / 15s OFF</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1uySwPdS6LBjI-WqIF_2tYHIVMbdDdGXC" alt="Jumping Jack" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Em pe, pes juntos, bracos na lateral.</p></div><div class="step"><div class="step-n">2</div><p>Salta abrindo pernas e levantando bracos acima da cabeca.</p></div><div class="step"><div class="step-n">3</div><p>Salta de volta. Ritmo alto e constante.</p></div>
+        <div class="tip"><span>💡</span><p>Parece simples, mas em alta intensidade por 30s vira cardio pesado.</p></div>
+        <div class="muscles"><span class="muscle">Deltoides</span><span class="muscle">Panturrilha</span><span class="muscle">Cardio</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Agachamento com Salto</h3><span class="reps">30s ON / 15s OFF</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1JTAkfullt5N3xJRXbJckvpyFz5axKjuZ" alt="Agachamento com Salto" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Agachamento completo, coxas paralelas.</p></div><div class="step"><div class="step-n">2</div><p>Explode num salto o mais alto possivel.</p></div><div class="step"><div class="step-n">3</div><p>Aterrissa suave na ponta dos pes, ja desce pro proximo.</p></div>
+        <div class="tip"><span>💡</span><p>Aterrissagem suave protege os joelhos. Cai leve, flexionando.</p></div>
+        <div class="muscles"><span class="muscle">Quadriceps</span><span class="muscle">Gluteos</span><span class="muscle">Panturrilha</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Corrida no Lugar (Joelho Alto)</h3><span class="reps">30s ON / 15s OFF</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1kd2C7PerZcg2vKtdB1RTyuLqxtxb8xnT" alt="Corrida no Lugar (Joelho Alto)" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Corre no lugar levantando joelhos ate a cintura.</p></div><div class="step"><div class="step-n">2</div><p>Bracos acompanham naturalmente.</p></div><div class="step"><div class="step-n">3</div><p>Ritmo alto por 30 segundos.</p></div>
+        <div class="tip"><span>💡</span><p>Se o joelho nao chega na cintura, nao conta!</p></div>
+        <div class="muscles"><span class="muscle">Iliopsoas</span><span class="muscle">Quadriceps</span><span class="muscle">Cardio</span></div>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="ex ">
+    <div class="ex-top"><h3>Polichinelo Cruzado</h3><span class="reps">30s ON / 15s OFF</span><div class="chevron">▼</div></div>
+    <div class="ex-body"><div class="ex-inner">
+      <div class="vid-box">
+        <img src="https://lh3.googleusercontent.com/d/1aze2Yc5RRF9bGQNzkVPuh7BnbG82evjv" alt="Polichinelo Cruzado" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/d/1hld_imFINYZ2nV-nxNK8XB4OOo5oPjc8'">
+        <span class="source">Google Drive</span>
+      </div>
+      <div class="info">
+        <h4>Execucao Correta</h4>
+        <div class="step"><div class="step-n">1</div><p>Similar ao jumping jack, mas bracos e pernas cruzam.</p></div><div class="step"><div class="step-n">2</div><p>Salta abrindo, depois salta cruzando.</p></div><div class="step"><div class="step-n">3</div><p>Alterna qual braco/perna fica na frente.</p></div>
+        <div class="tip"><span>💡</span><p>Trabalha coordenacao e ativa aductores (parte interna da coxa).</p></div>
+        <div class="muscles"><span class="muscle">Aductores</span><span class="muscle">Deltoides</span><span class="muscle">Cardio</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<div class="footer">
+  <p style="font-weight:600;color:#fff;margin-bottom:4px">Protocolo de Calistenia em Casa — Guia Visual</p>
+  <p>24 exercicios com demonstracao animada | GIFs: Google Drive | Custo: R$0,00</p>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+    document.getElementById('p-' + t.dataset.t).classList.add('show');
+  });
+});
+document.querySelectorAll('.ex-top').forEach(h => {
+  h.addEventListener('click', () => h.closest('.ex').classList.toggle('open'));
+});
+</script>
+</body>
+</html>
