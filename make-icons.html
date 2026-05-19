@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Generate Icons</title></head>
+<body style="background:#111;color:#fff;font-family:sans-serif;padding:24px">
+<h2>PWA Icon Generator</h2>
+<canvas id="c192" width="192" height="192" style="display:none"></canvas>
+<canvas id="c512" width="512" height="512" style="display:none"></canvas>
+<div style="display:flex;gap:16px;margin-top:16px">
+  <div><canvas id="p192" width="192" height="192" style="border-radius:20px"></canvas><br>
+    <a id="dl192" download="icon-192.png" style="color:#5b9aff">⬇ Baixar 192px</a></div>
+  <div><canvas id="p512" width="512" height="512" style="border-radius:52px;width:192px;height:192px"></canvas><br>
+    <a id="dl512" download="icon-512.png" style="color:#5b9aff">⬇ Baixar 512px</a></div>
+</div>
+<script>
+function draw(canvas, size) {
+  const ctx = canvas.getContext('2d');
+  const r = size * 0.18;
+  ctx.fillStyle = '#09090f';
+  ctx.beginPath();
+  ctx.roundRect(0, 0, size, size, r);
+  ctx.fill();
+  ctx.font = `${size * 0.52}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🏋️', size / 2, size / 2 + size * 0.04);
+}
+['192','512'].forEach(s => {
+  const c = document.getElementById('c'+s);
+  draw(c, +s);
+  const p = document.getElementById('p'+s);
+  draw(p, +s);
+  document.getElementById('dl'+s).href = c.toDataURL('image/png');
+});
+</script>
+</body>
+</html>
