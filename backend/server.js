@@ -8,7 +8,8 @@ const PORT = 3001;
 app.use(cors({
   origin: [
     'https://idarlandias.github.io',
-    /^http:\/\/localhost(:\d+)?$/
+    /^http:\/\/localhost(:\d+)?$/,
+    /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/
   ]
 }));
 app.use(express.json());

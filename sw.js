@@ -22,7 +22,7 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  if (e.request.url.includes('localhost:3001')) return;
+  if (e.request.url.includes(':3001')) return;
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
   );

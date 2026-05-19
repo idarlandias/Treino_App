@@ -530,9 +530,13 @@
   <header class="app-header">
     <div class="header-row">
       <span class="app-title">🏋️ Treino Semanal</span>
-      <div class="sync-badge" id="syncBadge">
-        <div class="sync-dot"></div>
-        PC CONECTADO
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="sync-badge" id="syncBadge">
+          <div class="sync-dot"></div>
+          PC CONECTADO
+        </div>
+        <button onclick="settingsHost()" title="Configurar IP do servidor"
+          style="background:none;border:1px solid var(--border2);color:var(--text3);border-radius:7px;width:26px;height:26px;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">⚙</button>
       </div>
     </div>
     <div class="prog-row">
@@ -925,7 +929,17 @@ function showToast(msg) {
 
 // ═══ SYNC ═══
 let serverAvailable = false;
-const API = 'http://localhost:3001';
+const DEFAULT_HOST = '192.168.3.152:3001';
+const API = 'http://' + (localStorage.getItem('serverHost') || DEFAULT_HOST);
+
+function settingsHost() {
+  const cur = localStorage.getItem('serverHost') || DEFAULT_HOST;
+  const val = prompt('IP:porta do servidor PC (ex: 192.168.3.152:3001)', cur);
+  if (val && val.trim()) {
+    localStorage.setItem('serverHost', val.trim());
+    location.reload();
+  }
+}
 
 async function detectServer() {
   try {
