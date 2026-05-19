@@ -3,4 +3,5 @@ __pycache__/
 .gemini/
 backend/node_modules/
 backend/treino.db
+backend/server.log
 js-backup.js
