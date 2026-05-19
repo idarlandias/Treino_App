@@ -14,6 +14,10 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.get('/', (_req, res) => {
+  res.send('<h2>✅ Treino Backend online</h2><p>Servidor rodando na porta 3001.</p>');
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true });
 });
