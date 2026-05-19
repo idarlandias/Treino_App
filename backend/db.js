@@ -1,68 +1,35 @@
-const initSqlJs = require('sql.js');
-const fs = require('fs');
+const Database = require('better-sqlite3');
 const path = require('path');
 
-let db = null;
+const db = new Database(path.join(__dirname, 'treino.db'));
 
-async function initDatabase() {
-  const SQL = await initSqlJs();
-  const dbPath = path.join(__dirname, 'treino.db');
-
-  let data = null;
-  if (fs.existsSync(dbPath)) {
-    data = fs.readFileSync(dbPath);
-  }
-
-  db = new SQL.Database(data);
-
-  db.run(`
-    CREATE TABLE IF NOT EXISTS progresso (
-      id         INTEGER PRIMARY KEY AUTOINCREMENT,
-      week_key   TEXT NOT NULL UNIQUE,
-      state_json TEXT NOT NULL,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  saveDatabase();
-  return db;
-}
-
-function saveDatabase() {
-  if (db) {
-    const data = db.export();
-    const buffer = Buffer.from(data);
-    fs.writeFileSync(path.join(__dirname, 'treino.db'), buffer);
-  }
-}
+db.exec(`
+  CREATE TABLE IF NOT EXISTS progresso (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    week_key   TEXT NOT NULL,
+    state_json TEXT NOT NULL,
+    updated_at TEXT DEFAULT (datetime('now'))
+  );
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_week ON progresso(week_key);
+`);
 
 function getProgresso(weekKey) {
-  if (!db) throw new Error('Database not initialized');
-  const stmt = db.prepare('SELECT state_json FROM progresso WHERE week_key = ?');
-  stmt.bind([weekKey]);
-  if (stmt.step()) {
-    const row = stmt.getAsObject();
-    stmt.free();
-    return JSON.parse(row.state_json);
-  }
-  stmt.free();
-  return null;
+  const row = db.prepare('SELECT state_json FROM progresso WHERE week_key = ?').get(weekKey);
+  return row ? JSON.parse(row.state_json) : null;
 }
 
 function upsertProgresso(weekKey, state) {
-  if (!db) throw new Error('Database not initialized');
-  db.run(
-    `INSERT OR REPLACE INTO progresso (week_key, state_json, updated_at)
-     VALUES (?, ?, CURRENT_TIMESTAMP)`,
-    [weekKey, JSON.stringify(state)]
-  );
-  saveDatabase();
+  db.prepare(`
+    INSERT INTO progresso (week_key, state_json, updated_at)
+    VALUES (?, ?, datetime('now'))
+    ON CONFLICT(week_key) DO UPDATE SET
+      state_json = excluded.state_json,
+      updated_at = excluded.updated_at
+  `).run(weekKey, JSON.stringify(state));
 }
 
 function deleteProgresso(weekKey) {
-  if (!db) throw new Error('Database not initialized');
-  db.run('DELETE FROM progresso WHERE week_key = ?', [weekKey]);
-  saveDatabase();
+  db.prepare('DELETE FROM progresso WHERE week_key = ?').run(weekKey);
 }
 
-module.exports = { initDatabase, getProgresso, upsertProgresso, deleteProgresso };
+module.exports = { getProgresso, upsertProgresso, deleteProgresso };
