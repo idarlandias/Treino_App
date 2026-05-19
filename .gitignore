@@ -1,3 +1,6 @@
 ﻿.venv/
 __pycache__/
 .gemini/
+backend/node_modules/
+backend/treino.db
+js-backup.js
